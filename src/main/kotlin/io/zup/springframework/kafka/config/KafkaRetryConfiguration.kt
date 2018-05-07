@@ -7,7 +7,7 @@ import org.springframework.kafka.config.KafkaListenerConfigUtils
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 
 @Configuration
-class KafkaRetryConfiguration {
+open class KafkaRetryConfiguration {
 
     @Bean(name = [KafkaListenerConfigUtils.KAFKA_LISTENER_ENDPOINT_REGISTRY_BEAN_NAME])
     open fun defaultKafkaListenerEndpointRegistry(): KafkaListenerEndpointRegistry =
