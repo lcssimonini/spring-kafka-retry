@@ -1,0 +1,2 @@
+# Auto Configure
+io.zup.springframework.boot.autoconfigure.kafka.KafkaRetryAutoConfiguration
