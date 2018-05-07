@@ -1,4 +1,4 @@
-package br.com.zup.kafka.framework.annotation
+package io.zup.springframework.kafka.annotation
 
 annotation class RetryPolicy(
     val topic: String,
