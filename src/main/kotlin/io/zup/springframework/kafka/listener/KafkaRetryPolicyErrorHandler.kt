@@ -1,4 +1,4 @@
-package br.com.zup.kafka.errorhandler
+package io.zup.springframework.kafka.listener
 
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.listener.KafkaListenerErrorHandler

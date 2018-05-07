@@ -1,18 +1,13 @@
-package br.com.zup.kafka.app
+package io.zup.springframework.kafka.annotation
 
-import br.com.zup.kafka.errorhandler.KafkaRetryPolicyErrorHandler
-import br.com.zup.kafka.framework.annotation.RetryKafkaListener
-import br.com.zup.kafka.framework.annotation.RetryPolicy
+import io.zup.springframework.kafka.listener.KafkaRetryPolicyErrorHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProcessor
-import org.springframework.kafka.config.KafkaListenerConfigUtils
 import org.springframework.kafka.config.MethodKafkaListenerEndpoint
 import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.stereotype.Component
 
-@Component(KafkaListenerConfigUtils.KAFKA_LISTENER_ANNOTATION_PROCESSOR_BEAN_NAME)
 open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V> : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
 
     @Autowired
