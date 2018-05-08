@@ -8,10 +8,9 @@ import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProce
 import org.springframework.kafka.config.MethodKafkaListenerEndpoint
 import org.springframework.kafka.core.KafkaTemplate
 
-open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V> : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
-
-    @Autowired
-    private lateinit var template: KafkaTemplate<K, V>
+open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
+    val template: KafkaTemplate<K, V>
+) : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
 
     override fun processListener(
         endpoint: MethodKafkaListenerEndpoint<*, *>?,
