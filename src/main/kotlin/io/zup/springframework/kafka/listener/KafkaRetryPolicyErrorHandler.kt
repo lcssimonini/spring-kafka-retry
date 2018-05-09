@@ -31,7 +31,7 @@ class KafkaRetryPolicyErrorHandler<K, V>(
             .apply { this.maxRetries = maxRetries }
 
     override fun handleError(message: Message<*>, exception: ListenerExecutionFailedException): Any {
-        println("Handling error ${exception} with retry policy")
+        println("Retrying message due to error: ${exception.message}")
 
         val remainingRetries = remainingRetries(message)
         val retryTopic = retryTopic(message)
