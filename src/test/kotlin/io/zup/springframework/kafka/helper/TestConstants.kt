@@ -8,6 +8,8 @@ object TestConstants {
 
     const val RETRY_TOPIC = "retry-topic"
 
+    const val DLQ_TOPIC = "dlq-topic"
+
     const val MAX_RETRIES = 3
 
 }

@@ -4,7 +4,8 @@ import io.zup.springframework.kafka.config.KafkaTestConfiguration
 import io.zup.springframework.kafka.helper.ListenerFactory
 import io.zup.springframework.kafka.helper.Matchers.hasHeader
 import io.zup.springframework.kafka.helper.TestConstants
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = [KafkaTestConfiguration::class])
-@EmbeddedKafka(partitions = 1, topics = [TestConstants.MAIN_TOPIC, TestConstants.RETRY_TOPIC])
+@EmbeddedKafka(partitions = 1, topics = [TestConstants.MAIN_TOPIC, TestConstants.RETRY_TOPIC, TestConstants.DLQ_TOPIC])
 class KafkaRetryPolicyErrorHandlerTest {
 
     @Autowired
@@ -57,7 +58,7 @@ class KafkaRetryPolicyErrorHandlerTest {
     }
 
     @Test
-    fun `should invoke error handler when message listener fails`() {
+    fun `should invoke message retry handler when message listener fails`() {
 
         receiver
             .reset()
@@ -70,6 +71,33 @@ class KafkaRetryPolicyErrorHandlerTest {
 
         receiver.awaitRetry()
             .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - 1)) }
+
+        assertTrue(receiver.await())
+    }
+
+    @Test
+    fun `should invoke dead letter queue handler when message retry handler fails repeatedly`() {
+
+        receiver
+            .reset()
+            .withInteractionCount(1 + TestConstants.MAX_RETRIES)
+            .withMessageHandler {
+                throw RuntimeException("Shit happens")
+            }
+            .withMessageRetryHandler {
+                throw RuntimeException("Shit happens even on retry")
+            }
+
+        kafkaTemplate.send(TestConstants.MAIN_TOPIC, "hello")
+
+        repeat(TestConstants.MAX_RETRIES) { count ->
+            val retryCount = count + 1
+            receiver.awaitRetry()
+                .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - retryCount)) }
+        }
+
+        receiver.awaitDeadLetter()
+            .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, 0)) }
 
         assertTrue(receiver.await())
     }

@@ -51,7 +51,16 @@ class KafkaRetryPolicyErrorHandler<K, V>(
 
         } else {
             // dlq
-            println("DLQ")
+            MessageBuilder
+                .fromMessage(message)
+                .removeHeader(KafkaHeaders.TOPIC)
+                .removeHeader(KafkaHeaders.PARTITION_ID)
+                .removeHeader(KafkaHeaders.MESSAGE_KEY)
+                .setHeader(KafkaHeaders.TOPIC, "dlq-topic")
+                .setHeader(REMAINING_RETRIES_HEADER, 0)
+                //.setHeader("retry_timestamp", Instant.now())
+                .build()
+                .let { send(it) }
         }
 
         return "ok"
