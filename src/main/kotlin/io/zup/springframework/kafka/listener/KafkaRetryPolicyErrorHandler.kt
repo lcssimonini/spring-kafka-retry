@@ -80,5 +80,5 @@ class KafkaRetryPolicyErrorHandler<K, V>(
         message.headers?.get(REMAINING_RETRIES_HEADER) as? Int ?: maxRetries
 
     private fun retryTimestamp(remainingRetries: Int): Long =
-        backoffStrategy.calculateBackoffTimeinSeconds(clock, maxRetries - remainingRetries, retryInterval)
+        backoffStrategy.calculateBackoffTimeInSeconds(clock, maxRetries - remainingRetries, retryInterval)
 }

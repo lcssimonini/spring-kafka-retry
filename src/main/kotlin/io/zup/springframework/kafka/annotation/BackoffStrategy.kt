@@ -2,35 +2,33 @@ package io.zup.springframework.kafka.annotation
 
 import java.time.Clock
 import java.util.*
+import kotlin.math.pow
 
 enum class BackoffStrategy {
 
     CONSTANT {
-        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+        override fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
             clock.instant().plusSeconds(timeInterval).epochSecond
     },
 
     LINEAR {
-        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
-            clock.instant().plusSeconds(iteration * timeInterval).epochSecond
+        override fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds((iteration + 1) * timeInterval).epochSecond
     },
 
     EXPONENTIAL {
-        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
-            clock.instant().plusSeconds(pow(timeInterval, iteration.toLong())).epochSecond
+        override fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds((2.0.pow(iteration) * timeInterval).toLong()).epochSecond
     },
 
     RANDOM {
-        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
-            clock.instant().plusSeconds(random(timeInterval * iteration)).epochSecond
+        override fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds(random(timeInterval * (iteration + 1))).epochSecond
     };
-
-    internal fun pow(a: Long, b: Long): Long =
-        Math.pow(a.toDouble(), b.toDouble()).toLong()
 
     internal fun random(bound: Long): Long =
         (Random().nextInt(bound.toInt())).toLong()
 
-    abstract fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long
+    abstract fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long
 
 }

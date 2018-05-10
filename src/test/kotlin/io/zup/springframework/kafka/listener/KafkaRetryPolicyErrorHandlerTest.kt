@@ -109,6 +109,6 @@ class KafkaRetryPolicyErrorHandlerTest {
     }
 
     private fun expectedTimestamp(retry: Int = 1): Long =
-        TestConstants.BACKOFF_STRATEGY.calculateBackoffTimeinSeconds(clock, retry, TestConstants.RETRY_INTERVAL)
+        TestConstants.BACKOFF_STRATEGY.calculateBackoffTimeInSeconds(clock, retry, TestConstants.RETRY_INTERVAL)
 
 }
