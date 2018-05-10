@@ -7,13 +7,12 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProcessor
 import org.springframework.kafka.config.MethodKafkaListenerEndpoint
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Method
 
 open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
     val template: KafkaTemplate<K, V>
 ) : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
-
-    private val retryPolicyCache = RetryPolicyCache()
 
     override fun processListener(
         endpoint: MethodKafkaListenerEndpoint<*, *>?,
@@ -22,28 +21,15 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
         adminTarget: Any?,
         beanName: String?
     ) {
-        val retryPolicyBeanCache = retryPolicyCache.get(bean!!)
 
-        var retryPolicy = AnnotationUtils.findAnnotation(endpoint!!.method, RetryPolicy::class.java)
-            ?.also {
-                retryPolicyBeanCache.registerRetryPolicy(it)
-            }
-
-        val retryListener = AnnotationUtils.findAnnotation(endpoint.method, RetryKafkaListener::class.java)
-            ?.also {
-                retryPolicy = retryPolicyBeanCache.getRetryPolicy(it.retryPolicyId)
-            }
-
-        retryPolicy
+        retryPolicyFor(bean!!, endpoint!!.method)
             ?.let { KafkaRetryPolicyErrorHandler.from(it, template) }
             ?.let { endpoint.setErrorHandler(it) }
-
 
         var wrappedBean = bean
         var wrappedTarget = adminTarget
 
-        adminTarget
-            ?.takeIf { retryListener != null && it is Method }
+        asRetryMethod(adminTarget)
             ?.let {
                 val originalMethod = it as Method
                 wrappedBean = RetryMessageListenerWrapper<K, V>(bean, originalMethod)
@@ -53,32 +39,30 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
             }
 
         super.processListener(endpoint, kafkaListener, wrappedBean, wrappedTarget, beanName)
-
     }
 
-    private class RetryPolicyCache {
+    private fun retryPolicyFor(bean: Any, method: Method): RetryPolicy? =
+            AnnotationUtils.findAnnotation(method, RetryPolicy::class.java) ?: retryPolicyForRetryKafkaListener(bean, method)
 
-        val beanCache: HashMap<Any, RetryPolicyBeanCache> = HashMap()
 
-        fun get(bean: Any) =
-            beanCache[bean] ?: RetryPolicyBeanCache(bean).also { beanCache[bean] = it }
+    private fun retryPolicyForRetryKafkaListener(bean: Any, method: Method): RetryPolicy? =
+        AnnotationUtils.findAnnotation(method, RetryKafkaListener::class.java)
+            ?.let { retryPolicyFor(it.retryPolicyId, bean) }
 
-    }
+    private fun retryPolicyFor(id: String, bean: Any): RetryPolicy? =
+        ReflectionUtils.getAllDeclaredMethods(bean.javaClass)
+            .map { AnnotationUtils.findAnnotation(it, RetryPolicy::class.java) }
+            .find { it.id == id }
 
-    private class RetryPolicyBeanCache(val bean: Any) {
+    private fun asRetryMethod(target: Any?): Method? =
+        target?.takeIf { target is Method && target.isAnnotationPresent(RetryKafkaListener::class.java) } as? Method
 
-        val retryPolicyCache: HashMap<String, RetryPolicy> = HashMap()
-
-        private fun beanClassName() = bean.javaClass.canonicalName
-
-        fun getRetryPolicy(id: String): RetryPolicy =
-            retryPolicyCache.get(id)
-                    ?: throw IllegalArgumentException("Retry policy with id = \"${id}\" not found in bean class ${beanClassName()}")
-
-        fun registerRetryPolicy(retryPolicy: RetryPolicy) =
-            if (!retryPolicyCache.containsKey(retryPolicy.id)) retryPolicyCache.put(retryPolicy.id, retryPolicy)
-            else throw IllegalArgumentException("Duplicated retry policy registered with id = \"${retryPolicy.id}\" in bean class ${beanClassName()}")
-
-    }
+//        fun getRetryPolicy(id: String): RetryPolicy =
+//            retryPolicyCache.get(id)
+//                    ?: throw IllegalArgumentException("Retry policy with id = \"${id}\" not found in bean class ${beanClassName()}")
+//
+//        fun registerRetryPolicy(retryPolicy: RetryPolicy) =
+//            if (!retryPolicyCache.containsKey(retryPolicy.id)) retryPolicyCache.put(retryPolicy.id, retryPolicy)
+//            else throw IllegalArgumentException("Duplicated retry policy registered with id = \"${retryPolicy.id}\" in bean class ${beanClassName()}")
 
 }
