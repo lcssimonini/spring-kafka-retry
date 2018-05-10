@@ -1,7 +1,6 @@
 package io.zup.springframework.kafka.listener
 
 import io.zup.springframework.kafka.config.KafkaTestConfiguration
-import io.zup.springframework.kafka.helper.ListenerFactory
 import io.zup.springframework.kafka.helper.Matchers.hasHeader
 import io.zup.springframework.kafka.helper.TestConstants
 import org.junit.Assert.assertThat
@@ -35,9 +34,6 @@ class KafkaRetryPolicyErrorHandlerTest {
 
     @Autowired
     private lateinit var receiver: Receiver<Int, String>
-
-    @Autowired
-    private lateinit var listenerFactory: ListenerFactory<Int, String>
 
     @Autowired
     private lateinit var clock: Clock

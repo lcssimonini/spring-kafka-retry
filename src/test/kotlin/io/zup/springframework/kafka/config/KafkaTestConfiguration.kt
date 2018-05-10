@@ -1,7 +1,5 @@
 package io.zup.springframework.kafka.config
 
-import io.zup.springframework.kafka.annotation.BackoffStrategy
-import io.zup.springframework.kafka.helper.ListenerFactory
 import io.zup.springframework.kafka.helper.TestConstants
 import io.zup.springframework.kafka.listener.KafkaRetryPolicyErrorHandler
 import io.zup.springframework.kafka.listener.Receiver
@@ -11,7 +9,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.KafkaListenerContainerFactory
-import org.springframework.kafka.core.*
+import org.springframework.kafka.core.ConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.core.ProducerFactory
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.kafka.listener.KafkaListenerErrorHandler
 import org.springframework.kafka.test.rule.KafkaEmbedded
@@ -55,10 +57,6 @@ open class KafkaTestConfiguration {
     @Bean
     open fun receiver(): Receiver<Int, String> =
         Receiver()
-
-    @Bean
-    open fun listenerFactory(): ListenerFactory<Int, String> =
-        ListenerFactory(consumerFactory())
 
     @Bean
     open fun errorHandler(): KafkaListenerErrorHandler =
