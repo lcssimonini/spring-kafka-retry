@@ -16,6 +16,8 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.kafka.listener.KafkaListenerErrorHandler
 import org.springframework.kafka.test.rule.KafkaEmbedded
 import org.springframework.kafka.test.utils.KafkaTestUtils
+import java.time.Clock
+import java.time.ZoneId
 
 
 @Configuration
@@ -24,6 +26,10 @@ open class KafkaTestConfiguration {
 
     @Autowired
     private lateinit var kafkaEmbedded: KafkaEmbedded
+
+    @Bean
+    open fun clock(): Clock =
+        Clock.fixed(TestConstants.BASE_INSTANT, ZoneId.of("UTC"))
 
     @Bean
     open fun producerFactory(): ProducerFactory<Int, String> =
@@ -54,15 +60,15 @@ open class KafkaTestConfiguration {
     open fun listenerFactory(): ListenerFactory<Int, String> =
         ListenerFactory(consumerFactory())
 
-
     @Bean
     open fun errorHandler(): KafkaListenerErrorHandler =
         KafkaRetryPolicyErrorHandler(
             template =  kafkaTemplate(),
-            retryTopic = TestConstants.RETRY_TOPIC,
-            dlqTopic = TestConstants.DLQ_TOPIC,
             maxRetries = TestConstants.MAX_RETRIES,
-            backoffStrategy = BackoffStrategy.CONSTANT
+            retryTopic = TestConstants.RETRY_TOPIC,
+            retryInterval = TestConstants.RETRY_INTERVAL,
+            dlqTopic = TestConstants.DLQ_TOPIC,
+            backoffStrategy = TestConstants.BACKOFF_STRATEGY,
+            clock = clock()
         )
-
 }

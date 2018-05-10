@@ -1,28 +1,28 @@
 package io.zup.springframework.kafka.annotation
 
-import java.time.Instant
+import java.time.Clock
 import java.util.*
 
 enum class BackoffStrategy {
 
     CONSTANT {
-        override fun calculateBackoffTimeinSeconds(iteration: Int, timeInterval: Long): Long =
-            Instant.now().plusSeconds(timeInterval).epochSecond
+        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds(timeInterval).epochSecond
     },
 
     LINEAR {
-        override fun calculateBackoffTimeinSeconds(iteration: Int, timeInterval: Long): Long =
-            Instant.now().plusSeconds(iteration * timeInterval).epochSecond
+        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds(iteration * timeInterval).epochSecond
     },
 
     EXPONENTIAL {
-        override fun calculateBackoffTimeinSeconds(iteration: Int, timeInterval: Long): Long =
-            Instant.now().plusSeconds(pow(timeInterval, iteration.toLong())).epochSecond
+        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds(pow(timeInterval, iteration.toLong())).epochSecond
     },
 
     RANDOM {
-        override fun calculateBackoffTimeinSeconds(iteration: Int, timeInterval: Long): Long =
-            Instant.now().plusSeconds(random(timeInterval * iteration)).epochSecond
+        override fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
+            clock.instant().plusSeconds(random(timeInterval * iteration)).epochSecond
     };
 
     internal fun pow(a: Long, b: Long): Long =
@@ -31,6 +31,6 @@ enum class BackoffStrategy {
     internal fun random(bound: Long): Long =
         (Random().nextInt(bound.toInt())).toLong()
 
-    abstract fun calculateBackoffTimeinSeconds(iteration: Int, timeInterval: Long): Long
+    abstract fun calculateBackoffTimeinSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long
 
 }

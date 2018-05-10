@@ -17,6 +17,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.kafka.test.rule.KafkaEmbedded
 import org.springframework.kafka.test.utils.ContainerTestUtils
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.Clock
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = [KafkaTestConfiguration::class])
@@ -37,6 +38,9 @@ class KafkaRetryPolicyErrorHandlerTest {
 
     @Autowired
     private lateinit var listenerFactory: ListenerFactory<Int, String>
+
+    @Autowired
+    private lateinit var clock: Clock
 
     @Before
     fun setUp() {
@@ -70,7 +74,10 @@ class KafkaRetryPolicyErrorHandlerTest {
         kafkaTemplate.send(TestConstants.MAIN_TOPIC, "hello")
 
         receiver.awaitRetry()
-            .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - 1)) }
+            .let {
+                assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - 1))
+                assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.RETRY_TIMESTAMP_HEADER, expectedTimestamp()))
+            }
 
         assertTrue(receiver.await())
     }
@@ -93,7 +100,10 @@ class KafkaRetryPolicyErrorHandlerTest {
         repeat(TestConstants.MAX_RETRIES) { count ->
             val retryCount = count + 1
             receiver.awaitRetry()
-                .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - retryCount)) }
+                .let {
+                    assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, TestConstants.MAX_RETRIES - retryCount))
+                    assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.RETRY_TIMESTAMP_HEADER, expectedTimestamp(retryCount)))
+                }
         }
 
         receiver.awaitDeadLetter()
@@ -101,5 +111,8 @@ class KafkaRetryPolicyErrorHandlerTest {
 
         assertTrue(receiver.await())
     }
+
+    private fun expectedTimestamp(retry: Int = 1): Long =
+        TestConstants.BACKOFF_STRATEGY.calculateBackoffTimeinSeconds(clock, retry, TestConstants.RETRY_INTERVAL)
 
 }
