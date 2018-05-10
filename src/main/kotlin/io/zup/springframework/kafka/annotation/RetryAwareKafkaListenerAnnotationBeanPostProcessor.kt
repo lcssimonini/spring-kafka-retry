@@ -21,19 +21,12 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
     ) {
 
         val retryPolicy = AnnotationUtils.findAnnotation(endpoint?.method, RetryPolicy::class.java)
+        // TODO: set error handler on retry listener whenever RetryKafkaListener annotation is present
         val retryListener = AnnotationUtils.findAnnotation(endpoint?.method, RetryKafkaListener::class.java)
 
-        KafkaRetryPolicyErrorHandler(template)
-            .takeIf {
-                retryPolicy != null || retryListener != null
-            }
-            ?.also { errorHandler ->
-                retryPolicy
-                    ?.apply { errorHandler.withRetryTopic(topic).withMaxRetries(retries) }
-            }
-            ?.let {
-                endpoint?.setErrorHandler(it)
-            }
+        retryPolicy
+            ?.let { KafkaRetryPolicyErrorHandler.from(it, template) }
+            ?.let { endpoint?.setErrorHandler(it) }
 
         super.processListener(endpoint, kafkaListener, bean, adminTarget, beanName)
 

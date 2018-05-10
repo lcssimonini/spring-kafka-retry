@@ -1,5 +1,6 @@
 package io.zup.springframework.kafka.config
 
+import io.zup.springframework.kafka.annotation.BackoffStrategy
 import io.zup.springframework.kafka.helper.ListenerFactory
 import io.zup.springframework.kafka.helper.TestConstants
 import io.zup.springframework.kafka.listener.KafkaRetryPolicyErrorHandler
@@ -56,8 +57,12 @@ open class KafkaTestConfiguration {
 
     @Bean
     open fun errorHandler(): KafkaListenerErrorHandler =
-        KafkaRetryPolicyErrorHandler(kafkaTemplate())
-            .withMaxRetries(TestConstants.MAX_RETRIES)
-            .withRetryTopic(TestConstants.RETRY_TOPIC)
+        KafkaRetryPolicyErrorHandler(
+            template =  kafkaTemplate(),
+            retryTopic = TestConstants.RETRY_TOPIC,
+            dlqTopic = TestConstants.DLQ_TOPIC,
+            maxRetries = TestConstants.MAX_RETRIES,
+            backoffStrategy = BackoffStrategy.CONSTANT
+        )
 
 }
