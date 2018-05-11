@@ -32,11 +32,9 @@ class KafkaRetryPolicyErrorHandler<K, V>(
                 template = template,
                 maxRetries = policy.retries,
                 retryTopic = policy.topic,
-                // FIXME: use retryInterval accordingly to annotation parameter
-                retryInterval = 10L,
+                retryInterval = policy.retryInterval,
                 dlqTopic = policy.dlqTopic,
-                // FIXME: use strategy accordingly to annotation parameter
-                backoffStrategy = BackoffStrategy.CONSTANT
+                backoffStrategy = policy.backoffStrategy
             )
     }
 
