@@ -2,6 +2,7 @@ package io.zup.springframework.kafka.annotation
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 
+@Suppress("UNUSED_PARAMETER")
 class ValidBeanClass {
     @RetryPolicy(id = "id_1", retries = 2, topic = "retry", dlqTopic = "dlq")
     fun methodOne(consumerRecord: ConsumerRecord<String, String>?) { }
@@ -17,6 +18,7 @@ class ValidBeanClass {
 
 }
 
+@Suppress("UNUSED_PARAMETER")
 class DuplicatedIdsClass {
     @RetryPolicy(id = "same_id", retries = 2, topic = "retry", dlqTopic = "dlq")
     fun methodOne(consumerRecord: ConsumerRecord<String, String>?) { }
@@ -25,6 +27,7 @@ class DuplicatedIdsClass {
     fun methodTwo(consumerRecord: ConsumerRecord<String, String>?) { }
 }
 
+@Suppress("UNUSED_PARAMETER")
 class MatchingRetryPolicyClass {
     @RetryPolicy(id = "matching_id", retries = 2, topic = "retry", dlqTopic = "dlq")
     fun methodOne(consumerRecord: ConsumerRecord<String, String>?) { }
@@ -33,11 +36,13 @@ class MatchingRetryPolicyClass {
     fun methodTwo(consumerRecord: ConsumerRecord<String, String>?) { }
 }
 
+@Suppress("UNUSED_PARAMETER")
 class MissingRetryPolicyClass {
     @RetryKafkaListener(retryPolicyId = "missing_id")
     fun methodTwo(consumerRecord: ConsumerRecord<String, String>?) { }
 }
 
+@Suppress("UNUSED_PARAMETER")
 class InvalidMethodSignatureBeanClassOne() {
 
     @RetryKafkaListener(retryPolicyId = "doenst_matter")
@@ -48,6 +53,7 @@ class InvalidMethodSignatureBeanClassOne() {
 
 }
 
+@Suppress("UNUSED_PARAMETER")
 class InvalidMethodSignatureBeanClassTwo() {
 
     @RetryKafkaListener(retryPolicyId = "doenst_matter")
@@ -55,6 +61,7 @@ class InvalidMethodSignatureBeanClassTwo() {
 
 }
 
+@Suppress("UNUSED_PARAMETER")
 class ValidMethodSignatureBeanClass() {
 
     @RetryKafkaListener(retryPolicyId = "doenst_matter")
