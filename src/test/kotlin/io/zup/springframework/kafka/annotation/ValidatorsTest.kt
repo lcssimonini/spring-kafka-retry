@@ -1,11 +1,16 @@
 package io.zup.springframework.kafka.annotation
 
-import io.zup.springframework.kafka.helper.assertFails
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExpectedException
 
 class RetryKafkaListenerValidatorsTest {
+
+    @Rule
+    @JvmField
+    val expectedException: ExpectedException = ExpectedException.none()
 
     @Test
     fun `should pass validation for RetryPolicies with different ids`() {
@@ -16,12 +21,11 @@ class RetryKafkaListenerValidatorsTest {
     @Test
     fun `should throw validation error for RetryPolicies with duplicated ids`() {
         val beanInstance = DuplicatedIdsClass()
-        assertFails(
-            IllegalArgumentException::class.java,
-            ErrorMessages.notUniqueId("same_id", beanInstance)
-        ) {
-            validateUniqueRetryPolicyId(beanInstance)
-        }
+
+        expectedException.expect(IllegalArgumentException::class.java)
+        expectedException.expectMessage(ErrorMessages.notUniqueId("same_id", beanInstance))
+
+        validateUniqueRetryPolicyId(beanInstance)
     }
 
     @Test
@@ -33,12 +37,11 @@ class RetryKafkaListenerValidatorsTest {
     @Test
     fun `should throw validation error for a RetryListener with missing RetryPolicy`() {
         val beanInstance = MissingRetryPolicyClass()
-        assertFails(
-            IllegalArgumentException::class.java,
-            ErrorMessages.policyNotFound("missing_id", beanInstance)
-        ) {
-            validateRetryListenersAreMatchingRetryPolicies(beanInstance)
-        }
+
+        expectedException.expect(IllegalArgumentException::class.java)
+        expectedException.expectMessage(ErrorMessages.policyNotFound("missing_id", beanInstance))
+
+        validateRetryListenersAreMatchingRetryPolicies(beanInstance)
     }
 
     @Test
@@ -51,30 +54,22 @@ class RetryKafkaListenerValidatorsTest {
     fun `should throw validation error for invalid RetryListener method with invalid arg type`() {
         val beanInstanceOne = InvalidMethodSignatureBeanClassOne()
         val invalidMethodOne = InvalidMethodSignatureBeanClassOne::class.java.getDeclaredMethod("invalidSignatureMethodOne", String::class.java)
-        assertFails(
-            IllegalArgumentException::class.java,
-            ErrorMessages.invalidRetryListenerMethodSignature(
-                invalidMethodOne,
-                beanInstanceOne
-            )
-        ) {
-            validateKafkaRetryListenerMethods(beanInstanceOne)
-        }
+
+        expectedException.expect(IllegalArgumentException::class.java)
+        expectedException.expectMessage(ErrorMessages.invalidRetryListenerMethodSignature(invalidMethodOne, beanInstanceOne))
+
+        validateKafkaRetryListenerMethods(beanInstanceOne)
     }
 
     @Test
     fun `should throw validation error for invalid RetryListener method invalid args count`() {
         val beanInstanceTwo = InvalidMethodSignatureBeanClassTwo()
         val invalidMethodTwo = InvalidMethodSignatureBeanClassTwo::class.java.getDeclaredMethod("invalidSignatureMethodTwo", ConsumerRecord::class.java, Int::class.java)
-        assertFails(
-            IllegalArgumentException::class.java,
-            ErrorMessages.invalidRetryListenerMethodSignature(
-                invalidMethodTwo,
-                beanInstanceTwo
-            )
-        ) {
-            validateKafkaRetryListenerMethods(beanInstanceTwo)
-        }
+
+        expectedException.expect(IllegalArgumentException::class.java)
+        expectedException.expectMessage(ErrorMessages.invalidRetryListenerMethodSignature(invalidMethodTwo, beanInstanceTwo))
+
+        validateKafkaRetryListenerMethods(beanInstanceTwo)
     }
 
     @Test
