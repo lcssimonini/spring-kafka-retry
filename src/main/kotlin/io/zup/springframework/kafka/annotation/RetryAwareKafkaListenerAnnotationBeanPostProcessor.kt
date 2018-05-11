@@ -25,9 +25,8 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
 
         setErrorHandler(bean, endpoint!!)
 
-        val wrappedBeanTarget = buildWrappedBeanTarget(endpoint, bean, adminTarget!!)
-
-        super.processListener(endpoint, kafkaListener, wrappedBeanTarget.first, wrappedBeanTarget.second, beanName)
+        buildWrappedBeanTarget(endpoint, bean, adminTarget!!)
+            .let { super.processListener(endpoint, kafkaListener, it.first, it.second, beanName) }
     }
 
 
