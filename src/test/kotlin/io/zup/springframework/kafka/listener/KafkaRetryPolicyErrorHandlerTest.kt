@@ -15,12 +15,14 @@ import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.kafka.test.rule.KafkaEmbedded
 import org.springframework.kafka.test.utils.ContainerTestUtils
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.Clock
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(classes = [KafkaTestConfiguration::class])
 @EmbeddedKafka(partitions = 1, topics = [TestConstants.MAIN_TOPIC, TestConstants.RETRY_TOPIC, TestConstants.DLQ_TOPIC])
+@DirtiesContext
 class KafkaRetryPolicyErrorHandlerTest {
 
     @Autowired
