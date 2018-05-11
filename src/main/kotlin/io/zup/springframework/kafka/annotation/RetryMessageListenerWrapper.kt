@@ -35,9 +35,6 @@ open class RetryMessageListenerWrapper<K, V>(
 
     }
 
-    private fun ConsumerRecord<K, V>.topic(consumerRecord: ConsumerRecord<K, V>) =
-        String(headers().headers(KafkaHeaders.TOPIC).first().value())
-
     private fun ConsumerRecord<K, V>.retryTimestamp() =
         String(headers().headers(KafkaRetryPolicyErrorHandler.RETRY_TIMESTAMP_HEADER).first().value()).toLong()
 
