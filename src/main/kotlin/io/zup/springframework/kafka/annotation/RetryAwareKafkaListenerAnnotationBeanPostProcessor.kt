@@ -1,16 +1,17 @@
 package io.zup.springframework.kafka.annotation
 
 import io.zup.springframework.kafka.listener.KafkaRetryPolicyErrorHandler
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProcessor
 import org.springframework.kafka.config.MethodKafkaListenerEndpoint
 import org.springframework.kafka.core.KafkaTemplate
+import java.lang.reflect.Method
 
 open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
     val template: KafkaTemplate<K, V>
 ) : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
+
 
     override fun processListener(
         endpoint: MethodKafkaListenerEndpoint<*, *>?,
@@ -20,24 +21,38 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
         beanName: String?
     ) {
 
-        val retryPolicy = AnnotationUtils.findAnnotation(endpoint?.method, RetryPolicy::class.java)
-        val retryListener = AnnotationUtils.findAnnotation(endpoint?.method, RetryKafkaListener::class.java)
+        validateBean(bean!!)
 
-        KafkaRetryPolicyErrorHandler(template)
-            .takeIf {
-                retryPolicy != null || retryListener != null
-            }
-            ?.also { errorHandler ->
-                retryPolicy
-                    ?.apply { errorHandler.withRetryTopic(topic).withMaxRetries(retries) }
-            }
-            ?.let {
-                endpoint?.setErrorHandler(it)
-            }
+        setErrorHandler(bean, endpoint!!)
 
-        super.processListener(endpoint, kafkaListener, bean, adminTarget, beanName)
-
+        buildWrappedBeanTarget(endpoint, bean, adminTarget!!)
+            .let { super.processListener(endpoint, kafkaListener, it.first, it.second, beanName) }
     }
 
+
+    private fun setErrorHandler(bean: Any, endpoint: MethodKafkaListenerEndpoint<*, *>) =
+        retryPolicyFor(bean, endpoint.method)
+            ?.let { KafkaRetryPolicyErrorHandler.from(it, template) }
+            ?.let { endpoint.setErrorHandler(it) }
+
+    private fun retryPolicyFor(bean: Any, method: Method): RetryPolicy? =
+        AnnotationUtils.findAnnotation(method, RetryPolicy::class.java) ?: retryPolicyForRetryKafkaListener(bean, method)
+
+    private fun retryPolicyForRetryKafkaListener(bean: Any, method: Method): RetryPolicy? =
+        AnnotationUtils.findAnnotation(method, RetryKafkaListener::class.java)?.let { retryPolicyFor(it.retryPolicyId, bean) }
+
+    private fun retryPolicyFor(id: String, bean: Any): RetryPolicy? =
+        bean.retryPolicies().find { it.id == id }
+
+
+    private fun buildWrappedBeanTarget(endpoint: MethodKafkaListenerEndpoint<*, *>, bean: Any, adminTarget: Any): Pair<Any, Any> =
+        asRetryMethod(adminTarget)
+            ?.let { RetryMessageListenerWrapper<K, V>(bean, it) to RetryMessageListenerWrapper.WRAPPER_METHOD }
+            ?.also { endpoint.method = RetryMessageListenerWrapper.WRAPPER_METHOD }
+                ?: bean to adminTarget
+
+
+    private fun asRetryMethod(target: Any?): Method? =
+        target?.takeIf { target is Method && target.isAnnotationPresent(RetryKafkaListener::class.java) } as? Method
 
 }
