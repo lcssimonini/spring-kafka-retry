@@ -128,25 +128,35 @@
                 <version>${kotlin.version}</version>
 
                 <configuration>
-                    <args>
-                        <arg>-Xcoroutines=enable</arg>
-                    </args>
+                    <experimentalCoroutines>enable</experimentalCoroutines>
+                    <jvmTarget>1.8</jvmTarget>
                 </configuration>
 
                 <executions>
                     <execution>
                         <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>test-compile</id>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.*</include>
+                    </includes>
+                </configuration>
             </plugin>
 
         </plugins>
