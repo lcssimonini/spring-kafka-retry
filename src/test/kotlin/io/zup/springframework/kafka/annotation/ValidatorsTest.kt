@@ -18,7 +18,7 @@ class RetryKafkaListenerValidatorsTest {
         val beanInstance = DuplicatedIdsClass()
         assertFails(
             IllegalArgumentException::class.java,
-            ErrorMessages.NOT_UNIQUE_ID("same_id", beanInstance)
+            ErrorMessages.notUniqueId("same_id", beanInstance)
         ) {
             validateUniqueRetryPolicyId(beanInstance)
         }
@@ -35,7 +35,7 @@ class RetryKafkaListenerValidatorsTest {
         val beanInstance = MissingRetryPolicyClass()
         assertFails(
             IllegalArgumentException::class.java,
-            ErrorMessages.POLICY_NOT_FOUND("missing_id", beanInstance)
+            ErrorMessages.policyNotFound("missing_id", beanInstance)
         ) {
             validateRetryListenersAreMatchingRetryPolicies(beanInstance)
         }
@@ -53,7 +53,7 @@ class RetryKafkaListenerValidatorsTest {
         val invalidMethodOne = InvalidMethodSignatureBeanClassOne::class.java.getDeclaredMethod("invalidSignatureMethodOne", String::class.java)
         assertFails(
             IllegalArgumentException::class.java,
-            ErrorMessages.INVALID_RETRY_LISTENER_METHOD_SIGNATURE(
+            ErrorMessages.invalidRetryListenerMethodSignature(
                 invalidMethodOne,
                 beanInstanceOne
             )
@@ -68,7 +68,7 @@ class RetryKafkaListenerValidatorsTest {
         val invalidMethodTwo = InvalidMethodSignatureBeanClassTwo::class.java.getDeclaredMethod("invalidSignatureMethodTwo", ConsumerRecord::class.java, Int::class.java)
         assertFails(
             IllegalArgumentException::class.java,
-            ErrorMessages.INVALID_RETRY_LISTENER_METHOD_SIGNATURE(
+            ErrorMessages.invalidRetryListenerMethodSignature(
                 invalidMethodTwo,
                 beanInstanceTwo
             )

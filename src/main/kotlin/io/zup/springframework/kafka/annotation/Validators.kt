@@ -4,20 +4,16 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.util.ReflectionUtils
 import java.lang.reflect.Method
 
-internal class ErrorMessages {
+internal object ErrorMessages {
 
-    companion object {
+    fun notUniqueId(id: String?, bean: Any) =
+        "Duplicated retry policy registered with id = \"${id}\" in bean class ${bean.javaClass.canonicalName}"
 
-        fun NOT_UNIQUE_ID(id: String?, bean: Any) =
-            "Duplicated retry policy registered with id = \"${id}\" in bean class ${bean.javaClass.canonicalName}"
+    fun policyNotFound(id: String?, bean: Any) =
+        "Retry policy with id = \"${id}\" not found in bean class ${bean.javaClass.canonicalName}"
 
-        fun POLICY_NOT_FOUND(id: String?, bean: Any) =
-            "Retry policy with id = \"${id}\" not found in bean class ${bean.javaClass.canonicalName}"
-
-        fun INVALID_RETRY_LISTENER_METHOD_SIGNATURE(method: Method, bean: Any) =
-            "Method ${method.name} of bean class ${bean.javaClass.canonicalName} is annotated with @RetryKafkaListener and must have exactly one parameter of type ${ConsumerRecord::class.java.canonicalName}"
-
-    }
+    fun invalidRetryListenerMethodSignature(method: Method, bean: Any) =
+        "Method ${method.name} of bean class ${bean.javaClass.canonicalName} is annotated with @RetryKafkaListener and must have exactly one parameter of type ${ConsumerRecord::class.java.canonicalName}"
 
 }
 
@@ -33,7 +29,7 @@ internal fun validateUniqueRetryPolicyId(bean: Any): Boolean =
         .takeIf { it.isNotEmpty() }
         ?.first()
         ?.let {
-            throw IllegalArgumentException(ErrorMessages.NOT_UNIQUE_ID(it, bean))
+            throw IllegalArgumentException(ErrorMessages.notUniqueId(it, bean))
         } ?: true
 
 
@@ -48,7 +44,7 @@ internal fun validateRetryListenersAreMatchingRetryPolicies(bean: Any): Boolean 
         .takeIf { it.isNotEmpty() }
         ?.first()
         ?.let {
-            throw IllegalArgumentException(ErrorMessages.POLICY_NOT_FOUND(it, bean))
+            throw IllegalArgumentException(ErrorMessages.policyNotFound(it, bean))
         } ?: true
 
 
@@ -70,5 +66,5 @@ internal fun validateKafkaRetryListenerMethods(bean: Any): Boolean =
 
 private fun validateKafkaRetryListenerMethod(bean: Any, method: Method): Boolean =
     if (method.parameterTypes.none { clazz -> clazz == ConsumerRecord::class.java } || method.parameterCount != 1)
-        throw IllegalArgumentException(ErrorMessages.INVALID_RETRY_LISTENER_METHOD_SIGNATURE(method, bean))
+        throw IllegalArgumentException(ErrorMessages.invalidRetryListenerMethodSignature(method, bean))
     else true
