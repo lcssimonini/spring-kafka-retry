@@ -45,7 +45,7 @@
     <scm>
         <connection>scm:git:https://github.com/ZupIT/spring-kafka-retry.git</connection>
         <url>https://github.com/ZupIT/spring-kafka-retry</url>
-        <developerConnection>scm:git:https://github.com/ZupIT/spring-kafka-retry</developerConnection>
+        <developerConnection>scm:git:git@github.com:ZupIT/spring-kafka-retry.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
