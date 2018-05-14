@@ -64,6 +64,8 @@ public class Listener {
 
 ### Prerequisites
 
+The library doesn't handle topics creation.
+
 * kafka-clients 0.11.0.x, 1.0.x
 * spring-kafka version 1.3.x
 * jackson 2.x - required for serializing message headers used by this lib.
