@@ -73,7 +73,7 @@ public class Listener {
 
 * Using [Maven](https://maven.apache.org/) - Dependency Management - Include the following dependencies in pom.xml:
 
-```
+```xml
 <properties>
     <jackson.version>2.9.5</jackson.version>
     <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
@@ -119,7 +119,7 @@ public class Listener {
 ## Unit Testing
 
 Setup maven test dependencies:
-```
+```xml
 <properties>
     <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
     <mockito.version>1.10.19</mockito.version>
