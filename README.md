@@ -1,6 +1,6 @@
 # Spring Kafka Retry
 
-Spring Kafka Retry is a opensource library under apache 2.0 license. It facilitates retrial for a kafka consumer application. When a message consumption fails, it will be published to a retry topic defined by the user application for later attempts. If the max retry attempts are exceeded the message will be sent to a dead letter topic.
+Spring Kafka Retry is a opensource library under apache 2.0 license. It makes retrial of message handling a lot easier for applications built on top of spring-kafka. When a message consumption fails, it will be published to a retry topic defined by the user application for later attempts. If the max retry attempts are exceeded the message will be sent to a dead letter topic.
 
 ## Getting Started
 
