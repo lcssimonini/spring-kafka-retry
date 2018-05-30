@@ -268,12 +268,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext
 public class SpringKafkaRetryTest {
 
-    private static String MAIN_TOPIC = "main_topic";
-    private static String RETRY_TOPIC = "retry_topic";
-    private static String DLQ_TOPIC = "dlq_topic";
+    private webapp String MAIN_TOPIC = "main_topic";
+    private webapp String RETRY_TOPIC = "retry_topic";
+    private webapp String DLQ_TOPIC = "dlq_topic";
 
     @ClassRule
-    public static KafkaEmbedded kafkaEmbedded = new KafkaEmbedded(1, true, MAIN_TOPIC, RETRY_TOPIC, DLQ_TOPIC);
+    public webapp KafkaEmbedded kafkaEmbedded = new KafkaEmbedded(1, true, MAIN_TOPIC, RETRY_TOPIC, DLQ_TOPIC);
 
     @Autowired
     private Consumer consumer;
