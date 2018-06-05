@@ -13,7 +13,7 @@ open class MvcConfiguration : WebMvcConfigurerAdapter() {
     lateinit var resourcePath: String
 
     override fun addViewControllers(registry: ViewControllerRegistry) {
-        registry.addRedirectViewController(resourcePath, getFormattedPath("index.html"));
+        registry.addRedirectViewController(resourcePath, getFormattedPath("index.html"))
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
@@ -27,6 +27,6 @@ open class MvcConfiguration : WebMvcConfigurerAdapter() {
             return resourcePath + suffixPath
         }
 
-        return "$resourcePath/$suffixPath";
+        return "$resourcePath/$suffixPath"
     }
 }
