@@ -66,7 +66,7 @@ open class KafkaTestConfiguration {
             retryTopic = TestConstants.RETRY_TOPIC,
             retryInterval = TestConstants.RETRY_INTERVAL,
             dlqTopic = TestConstants.DLQ_TOPIC,
-            backoffStrategy = TestConstants.BACKOFF_STRATEGY,
+            backOffStrategy = TestConstants.BACKOFF_STRATEGY,
             clock = clock()
         )
 }

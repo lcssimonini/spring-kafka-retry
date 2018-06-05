@@ -80,7 +80,7 @@ The library doesn't handle topics creation.
     <jackson.version>2.9.5</jackson.version>
     <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
     <spring-kafka.version>1.3.5.RELEASE</spring-kafka.version>
-    <spring-kafka-retry.version>1.0.0.RELEASE</spring-kafka-retry.version>
+    <spring-kafka-retry.version>1.0.1</spring-kafka-retry.version>
 </properties>
 
 <dependencies>

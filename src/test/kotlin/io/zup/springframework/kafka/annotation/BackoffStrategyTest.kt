@@ -22,7 +22,7 @@ class BackoffStrategyTest {
     fun `should calculate backoff time in seconds considering a constant progression`() {
 
         repeat(10) {
-            val calculatedValue = BackoffStrategy.CONSTANT.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
+            val calculatedValue = BackOffStrategy.CONSTANT.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
             assertEquals(INTERVAL, calculatedValue)
         }
     }
@@ -31,7 +31,7 @@ class BackoffStrategyTest {
     fun `should calculate backoff time in seconds considering a linear progression`() {
 
         repeat(10) {
-            val calculatedValue = BackoffStrategy.LINEAR.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
+            val calculatedValue = BackOffStrategy.LINEAR.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
             assertEquals((it + 1) * INTERVAL, calculatedValue)
         }
     }
@@ -40,7 +40,7 @@ class BackoffStrategyTest {
     fun `should calculate backoff time in seconds considering a exponential progression`() {
 
         repeat(10) {
-            val calculatedValue = BackoffStrategy.EXPONENTIAL.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
+            val calculatedValue = BackOffStrategy.EXPONENTIAL.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
             assertEquals((2.0.pow(it) * INTERVAL).toLong(), calculatedValue)
         }
     }
@@ -49,7 +49,7 @@ class BackoffStrategyTest {
     fun `should calculate backoff time in seconds considering a random progression`() {
 
         repeat(10) {
-            val calculatedValue = BackoffStrategy.RANDOM.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
+            val calculatedValue = BackOffStrategy.RANDOM.calculateBackoffTimeInSeconds(clock, it, INTERVAL)
             assertThat(calculatedValue, greaterThanOrEqualTo(0L))
             assertThat(calculatedValue, lessThan((it + 1) * INTERVAL))
         }

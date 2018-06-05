@@ -3,13 +3,13 @@ package io.zup.springframework.kafka.listener
 import io.zup.springframework.kafka.config.KafkaTestConfiguration
 import io.zup.springframework.kafka.helper.Matchers.hasHeader
 import io.zup.springframework.kafka.helper.TestConstants
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.core.env.Environment
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.test.context.EmbeddedKafka
@@ -24,6 +24,9 @@ import java.time.Clock
 @EmbeddedKafka(partitions = 1, topics = [TestConstants.MAIN_TOPIC, TestConstants.RETRY_TOPIC, TestConstants.DLQ_TOPIC])
 @DirtiesContext
 class KafkaRetryPolicyErrorHandlerTest {
+
+    @Autowired
+    private lateinit var environment: Environment
 
     @Autowired
     private lateinit var kafkaTemplate: KafkaTemplate<Int, String>
@@ -108,6 +111,18 @@ class KafkaRetryPolicyErrorHandlerTest {
             .let { assertThat(it, hasHeader(KafkaRetryPolicyErrorHandler.REMAINING_RETRIES_HEADER, 0)) }
 
         assertTrue(receiver.await())
+    }
+
+    @Test
+    fun `should evaluate topic name defined via properties`() {
+        val name = KafkaRetryPolicyErrorHandler.resolveTopicName(environment, "\${kafka.main.topic}")
+        assertEquals("main-topic", name)
+    }
+
+    @Test
+    fun `should not resolve undefined topic name`() {
+        val name = KafkaRetryPolicyErrorHandler.resolveTopicName(environment, "\${kafka.unresolved.topic}")
+        assertEquals("\${kafka.unresolved.topic}", name)
     }
 
     private fun expectedTimestamp(retry: Int = 1): Long =

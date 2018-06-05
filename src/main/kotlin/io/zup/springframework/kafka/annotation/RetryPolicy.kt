@@ -6,5 +6,5 @@ annotation class RetryPolicy(
     val retries: Int,
     val dlqTopic: String,
     val retryInterval: Long = 1L,
-    val backoffStrategy: BackoffStrategy = BackoffStrategy.EXPONENTIAL
+    val backoffStrategy: BackOffStrategy = BackOffStrategy.EXPONENTIAL
 )
