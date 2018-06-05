@@ -1,5 +1,6 @@
 package io.zup.springframework.kafka.ui.repository.impl
 
+import io.zup.springframework.kafka.ui.model.Message
 import io.zup.springframework.kafka.ui.repository.MessageRepository
 import org.springframework.stereotype.Component
 
@@ -7,12 +8,12 @@ import org.springframework.stereotype.Component
 class MessageInMemoryRepositoryImpl : MessageRepository {
 
     companion object {
-        val messages = mutableListOf<String>()
+        val messages = mutableListOf<Message>()
     }
 
-    override fun get(): List<String> = messages
+    override fun get(): List<Message> = messages
 
-    override fun add(message: String) {
+    override fun add(message: Message) {
         messages.add(message)
     }
 

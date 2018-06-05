@@ -1,9 +1,11 @@
 package io.zup.springframework.kafka.ui.repository
 
+import io.zup.springframework.kafka.ui.model.Message
+
 interface MessageRepository {
 
-    fun get(): List<String>
+    fun get(): List<Message>
 
-    fun add(message: String)
+    fun add(message: Message)
 
 }
