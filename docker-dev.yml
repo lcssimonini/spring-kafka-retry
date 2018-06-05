@@ -1,0 +1,11 @@
+version: '2'
+services:
+  stubby4j:
+     image: joncanning/stubby4j
+     ports:
+       - "8888:8888"
+       - "8889:8889"
+     environment:
+       STUBBY_PORT: 8888
+     volumes:
+       - ./docker-compose-stubby.yml:/usr/local/stubby.yml
