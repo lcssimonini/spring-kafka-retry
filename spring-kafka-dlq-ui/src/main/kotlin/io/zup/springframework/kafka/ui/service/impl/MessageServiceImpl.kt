@@ -10,4 +10,8 @@ class MessageServiceImpl (private val messageRepository: MessageRepository) : Me
 
     override fun get(): List<Message> = messageRepository.get()
 
+    override fun add(message: Message) {
+        messageRepository.add(message)
+    }
+
 }

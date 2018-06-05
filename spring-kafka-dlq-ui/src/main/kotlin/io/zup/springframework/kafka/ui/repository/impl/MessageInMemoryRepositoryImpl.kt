@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class MessageInMemoryRepositoryImpl : MessageRepository {
 
     companion object {
-        val messages = mutableListOf<Message>()
+        private val messages = mutableListOf<Message>()
     }
 
     override fun get(): List<Message> = messages

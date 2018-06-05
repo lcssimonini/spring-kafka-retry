@@ -6,6 +6,6 @@ interface MessageRepository {
 
     fun get(): List<Message>
 
-    fun add(message: Message)
+    fun add(messages: Message)
 
 }
