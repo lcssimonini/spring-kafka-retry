@@ -12,7 +12,6 @@ import Vue from 'vue';
  */
 import Axios from 'axios';
 
-Axios.defaults.baseURL = 'http://localhost:8888';
 Axios.defaults.headers.common['Content-Type'] = 'application/json';
 Axios.defaults.headers.common['Accept'] = 'application/json';
 
