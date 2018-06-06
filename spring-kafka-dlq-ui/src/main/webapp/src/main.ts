@@ -17,6 +17,16 @@ Axios.defaults.headers.common['Content-Type'] = 'application/json';
 Axios.defaults.headers.common['Accept'] = 'application/json';
 
 /* ============
+ * Notifications
+ * ============
+ *
+ * @see https://github.com/euvl/vue-notification
+ */
+import Notifications from 'vue-notification';
+
+Vue.use(Notifications);
+
+/* ============
  * Vue Good Table
  * ============
  *

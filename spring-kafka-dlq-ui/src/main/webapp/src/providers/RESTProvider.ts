@@ -1,9 +1,9 @@
-import axios, { AxiosPromise, AxiosResponse } from 'axios';
+import axios, { AxiosResponse} from 'axios';
 
 export abstract class RESTProvider {
-  protected abstract getResource(): string;
-
   public fetch(): Promise<AxiosResponse> {
     return axios.get(this.getResource());
   }
+
+  protected abstract getResource(): string;
 }

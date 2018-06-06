@@ -1,6 +1,8 @@
 <template>
     <div id="app">
         <router-view/>
+
+        <notifications classes="vue-notification mt-4 mr-4" group="notifications" />
     </div>
 </template>
 

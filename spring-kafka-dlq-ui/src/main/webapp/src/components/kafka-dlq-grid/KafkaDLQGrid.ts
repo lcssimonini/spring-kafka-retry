@@ -1,6 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { KafkaMessageProvider } from '@/providers/KafkaMessageProvider';
-import { KafkaMessage } from '@/model/KafkaMessage';
 
 @Component
 export default class KafkaDLQTable extends Vue {
@@ -26,7 +25,24 @@ export default class KafkaDLQTable extends Vue {
     this.rows = result.data;
   }
 
-  public republishMessage(offset: number) {
-    this.kafkaMessageProvider.republish(offset);
+  public async republishMessage(offset: number) {
+    try {
+      await this.kafkaMessageProvider.republish(offset);
+
+      this.$notify({
+        group: 'notifications',
+        title: 'Success!',
+        type: 'success',
+        text: 'The message has been republished.'
+      });
+
+    } catch (err) {
+      this.$notify({
+        type: 'error',
+        title: 'Error!',
+        group: 'notifications',
+        text: err.message || err.toString()
+      });
+    }
   }
 }
