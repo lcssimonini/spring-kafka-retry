@@ -1,5 +1,7 @@
 .DS_Store
 node_modules
+node
+etc
 /dist
 
 /tests/e2e/reports/
