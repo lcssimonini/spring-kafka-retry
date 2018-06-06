@@ -33,7 +33,7 @@ export default class KafkaDLQTable extends Vue {
         group: 'notifications',
         title: 'Success!',
         type: 'success',
-        text: 'The message has been republished.'
+        text: 'The message has been republished.',
       });
 
     } catch (err) {
@@ -41,7 +41,7 @@ export default class KafkaDLQTable extends Vue {
         type: 'error',
         title: 'Error!',
         group: 'notifications',
-        text: err.message || err.toString()
+        text: err.message || err.toString(),
       });
     }
   }
