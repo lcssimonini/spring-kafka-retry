@@ -18,9 +18,11 @@
       "spaces",
       2
     ],
+    "triple-equals": false,
     "interface-name": false,
     "ordered-imports": false,
     "no-string-literal": false,
+    "arrow-parens": false,
     "eofline": false,
     "object-literal-sort-keys": false,
     "object-literal-key-quotes": [true, "as-needed"],

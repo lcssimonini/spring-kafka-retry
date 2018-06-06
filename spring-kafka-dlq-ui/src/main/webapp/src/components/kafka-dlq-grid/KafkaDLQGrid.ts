@@ -28,7 +28,7 @@ export default class KafkaDLQTable extends Vue {
   public async republishMessage(offset: number) {
     try {
       await this.kafkaMessageProvider.republish(offset);
-
+      this.removeMessage(offset);
       this.$notify({
         group: 'notifications',
         title: 'Success!',
@@ -44,5 +44,11 @@ export default class KafkaDLQTable extends Vue {
         text: err.message || err.toString(),
       });
     }
+  }
+
+  private removeMessage(offset: number): void {
+    const index = this.rows.findIndex(row => row.offset == offset);
+
+    this.rows.splice(index, 1);
   }
 }
