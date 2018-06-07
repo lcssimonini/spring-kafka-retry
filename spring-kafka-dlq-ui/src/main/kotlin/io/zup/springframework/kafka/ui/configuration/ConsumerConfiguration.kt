@@ -12,7 +12,7 @@ import java.util.*
 @Configuration
 open class ConsumerConfiguration {
 
-    @Value("\${spring.kafka.consumer.auto-offset-reset}")
+    @Value("\${spring.kafka.dlq-ui.consumer.auto-offset-reset}")
     private lateinit var strategy : String
 
     @Value("\${spring.kafka.bootstrap-servers}")
@@ -32,7 +32,7 @@ open class ConsumerConfiguration {
         return props
     }
 
-    @Bean
+    @Bean("springKafkaDLQUIListenerContainerFactory")
     open fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, String>()
         factory.consumerFactory = DefaultKafkaConsumerFactory(consumerConfigs())

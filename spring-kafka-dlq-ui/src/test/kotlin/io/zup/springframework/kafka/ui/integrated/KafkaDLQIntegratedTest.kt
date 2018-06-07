@@ -1,6 +1,6 @@
 package io.zup.springframework.kafka.ui.integrated
 
-import io.zup.springframework.kafka.ui.configuration.KafkaDLQUITestApplication
+import io.zup.springframework.kafka.ui.KafkaDLQUITestApplication
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired

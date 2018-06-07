@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component
 @Component
 class MessageConsumer(private val messageService: MessageService) {
 
-
-    @KafkaListener(topics = ["\${spring.kafka.dlq-ui.topic}"])
+    @KafkaListener(
+        containerFactory = "springKafkaDLQUIListenerContainerFactory",
+        topics = ["\${spring.kafka.dlq-ui.topic}"]
+    )
     private fun receive(
         messages: List<String>,
         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) partitions: List<Int>,
