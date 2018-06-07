@@ -1,0 +1,41 @@
+-  request:
+      method: GET
+      url: ^/messages$
+      headers:
+         accept: application/json
+
+   response:
+      status: 200
+      headers:
+         content-type: application/json
+         access-control-allow-Origin: "*"
+         access-control-allow-Credentials: true
+         access-control-allow-Methods: "POST, GET, OPTIONS, DELETE"
+         access-control-max-Age: 3600
+         access-control-allow-Headers": "Content-Type, Accept, X-Requested-With, Authorization"
+      body: >
+        [
+          {
+              "offset": 1,
+              "key": "anykey",
+              "header": "{'header': 'json'}",
+              "payload": "{'payload': 'json'}",
+              "timestamp": 2131232131231
+            }
+        ]
+
+-  request:
+      method: POST
+      url: ^/messages/(.*)/republish$
+      headers:
+         accept: application/json
+
+   response:
+      status: 200
+      headers:
+         content-type: application/json
+         access-control-allow-Origin: "*"
+         access-control-allow-Credentials: true
+         access-control-allow-Methods: "POST, GET, OPTIONS, DELETE"
+         access-control-max-Age: 3600
+         access-control-allow-Headers": "Content-Type, Accept, X-Requested-With, Authorization"

@@ -19,7 +19,7 @@ open class MvcConfiguration : WebMvcConfigurerAdapter() {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry
             .addResourceHandler(getFormattedPath("**"))
-            .addResourceLocations("classpath:/static/kafka-dlq-ui/")
+            .addResourceLocations("classpath:/kafka-dlq-ui/")
     }
 
     private fun getFormattedPath(suffixPath: String): String {
