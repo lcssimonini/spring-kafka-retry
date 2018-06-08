@@ -1,5 +1,6 @@
 version: '2'
 services:
+
   stubby4j:
      image: joncanning/stubby4j
      ports:
@@ -9,3 +10,13 @@ services:
        STUBBY_PORT: 8888
      volumes:
        - ./docker-compose-stubby.yml:/usr/local/stubby.yml
+     networks:
+       - custom
+
+networks:
+  custom:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.167.60.0/16

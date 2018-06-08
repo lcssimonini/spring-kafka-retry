@@ -16,4 +16,15 @@ class MessageControllerTest extends Specification {
         1 * messageService.get()
     }
 
+    def "should republish message"() {
+        given:
+        def uuid = "da87f1c8-dd12-4eb1-9523-903f5ba0d208"
+
+        when:
+        messageController.republish(uuid)
+
+        then:
+        1 * messageService.republish(uuid)
+    }
+
 }

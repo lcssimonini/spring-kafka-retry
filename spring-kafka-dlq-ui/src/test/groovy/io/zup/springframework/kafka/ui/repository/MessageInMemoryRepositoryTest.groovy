@@ -13,11 +13,23 @@ class MessageInMemoryRepositoryTest extends Specification {
         Message message = new Message(1, 1L, "message")
 
         when:
-        messageRepository.add(message)
+        def uuid = messageRepository.add(message)
         def result = messageRepository.get()
 
         then:
-        result == [message]
+        result.get(uuid) == message
+    }
+
+    def "should add and remove"() {
+        given:
+        Message message = new Message(1, 1L, "message")
+
+        when:
+        def uuid = messageRepository.add(message)
+        def result = messageRepository.remove(uuid)
+
+        then:
+        result == message
     }
 
 }
