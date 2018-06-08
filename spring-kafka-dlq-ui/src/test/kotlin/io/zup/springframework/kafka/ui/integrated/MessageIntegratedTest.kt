@@ -3,8 +3,8 @@ package io.zup.springframework.kafka.ui.integrated
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.zup.springframework.kafka.ui.KafkaDLQUITestApplication
-import io.zup.springframework.kafka.ui.helper.TestConstants.REPUBLISH_TOPIC
 import io.zup.springframework.kafka.ui.helper.TestConstants.DLQ_TOPIC
+import io.zup.springframework.kafka.ui.helper.TestConstants.REPUBLISH_TOPIC
 import io.zup.springframework.kafka.ui.integrated.consumer.RepublishConsumer
 import org.hamcrest.Matchers.contains
 import org.junit.Before
