@@ -1,6 +1,6 @@
 package io.zup.springframework.kafka.helper
 
-import io.zup.springframework.kafka.annotation.BackoffStrategy
+import io.zup.springframework.kafka.annotation.BackOffStrategy
 import java.time.Instant
 
 object TestConstants {
@@ -17,6 +17,6 @@ object TestConstants {
 
     val BASE_INSTANT = Instant.parse("1986-07-05T09:00:00Z")
 
-    val BACKOFF_STRATEGY = BackoffStrategy.CONSTANT
+    val BACKOFF_STRATEGY = BackOffStrategy.CONSTANT
 
 }

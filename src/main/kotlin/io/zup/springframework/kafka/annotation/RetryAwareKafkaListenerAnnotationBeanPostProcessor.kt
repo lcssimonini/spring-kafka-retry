@@ -2,6 +2,7 @@ package io.zup.springframework.kafka.annotation
 
 import io.zup.springframework.kafka.listener.KafkaRetryPolicyErrorHandler
 import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.core.env.Environment
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.annotation.KafkaListenerAnnotationBeanPostProcessor
 import org.springframework.kafka.config.MethodKafkaListenerEndpoint
@@ -9,9 +10,9 @@ import org.springframework.kafka.core.KafkaTemplate
 import java.lang.reflect.Method
 
 open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
-    val template: KafkaTemplate<K, V>
+    val template: KafkaTemplate<K, V>,
+    val environment: Environment
 ) : KafkaListenerAnnotationBeanPostProcessor<K, V>() {
-
 
     override fun processListener(
         endpoint: MethodKafkaListenerEndpoint<*, *>?,
@@ -32,7 +33,7 @@ open class RetryAwareKafkaListenerAnnotationBeanPostProcessor<K, V>(
 
     private fun setErrorHandler(bean: Any, endpoint: MethodKafkaListenerEndpoint<*, *>) =
         retryPolicyFor(bean, endpoint.method)
-            ?.let { KafkaRetryPolicyErrorHandler.from(it, template) }
+            ?.let { KafkaRetryPolicyErrorHandler.from(it, template, environment) }
             ?.let { endpoint.setErrorHandler(it) }
 
     private fun retryPolicyFor(bean: Any, method: Method): RetryPolicy? =

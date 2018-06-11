@@ -1,6 +1,6 @@
 package io.zup.springframework.kafka.listener
 
-import io.zup.springframework.kafka.annotation.BackoffStrategy
+import io.zup.springframework.kafka.annotation.BackOffStrategy
 import io.zup.springframework.kafka.annotation.RetryPolicy
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -11,6 +11,7 @@ import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.support.MessageBuilder
 import java.time.Clock
+import org.springframework.core.env.Environment
 
 class KafkaRetryPolicyErrorHandler<K, V>(
     private val template: KafkaTemplate<K, V>,
@@ -18,7 +19,7 @@ class KafkaRetryPolicyErrorHandler<K, V>(
     private val retryTopic: String,
     private val retryInterval: Long,
     private val dlqTopic: String,
-    private val backoffStrategy: BackoffStrategy,
+    private val backOffStrategy: BackOffStrategy,
     private val clock: Clock = Clock.systemUTC()
 ): KafkaListenerErrorHandler {
 
@@ -27,14 +28,17 @@ class KafkaRetryPolicyErrorHandler<K, V>(
         const val REMAINING_RETRIES_HEADER = "remaining-retries"
         const val RETRY_TIMESTAMP_HEADER = "retry-timestamp"
 
-        fun <K, V> from(policy: RetryPolicy, template: KafkaTemplate<K, V>): KafkaRetryPolicyErrorHandler<K, V> =
+        internal fun resolveTopicName(environment: Environment, key: String) =
+            environment.resolvePlaceholders(key)
+
+        fun <K, V> from(policy: RetryPolicy, template: KafkaTemplate<K, V>, environment: Environment): KafkaRetryPolicyErrorHandler<K, V> =
             KafkaRetryPolicyErrorHandler(
                 template = template,
                 maxRetries = policy.retries,
-                retryTopic = policy.topic,
+                retryTopic = resolveTopicName(environment, policy.topic),
                 retryInterval = policy.retryInterval,
-                dlqTopic = policy.dlqTopic,
-                backoffStrategy = policy.backoffStrategy
+                dlqTopic = resolveTopicName(environment, policy.dlqTopic),
+                backOffStrategy = policy.backoffStrategy
             )
     }
 
@@ -78,5 +82,5 @@ class KafkaRetryPolicyErrorHandler<K, V>(
         message.headers?.get(REMAINING_RETRIES_HEADER) as? Int ?: maxRetries
 
     private fun retryTimestamp(remainingRetries: Int): Long =
-        backoffStrategy.calculateBackoffTimeInSeconds(clock, maxRetries - remainingRetries, retryInterval)
+        backOffStrategy.calculateBackoffTimeInSeconds(clock, maxRetries - remainingRetries, retryInterval)
 }

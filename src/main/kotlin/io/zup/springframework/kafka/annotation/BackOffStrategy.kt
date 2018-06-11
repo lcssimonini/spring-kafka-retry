@@ -4,7 +4,7 @@ import java.time.Clock
 import java.util.*
 import kotlin.math.pow
 
-enum class BackoffStrategy {
+enum class BackOffStrategy {
 
     CONSTANT {
         override fun calculateBackoffTimeInSeconds(clock: Clock, iteration: Int, timeInterval: Long): Long =
