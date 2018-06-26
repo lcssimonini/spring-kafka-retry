@@ -4,9 +4,9 @@ import { KafkaMessageProvider } from '@/providers/KafkaMessageProvider';
 @Component
 export default class KafkaDLQTable extends Vue {
   public columns = [
+    { label: 'ID', field: 'id'},
     { label: 'Offset', field: 'offset', filterOptions: { enabled: true } },
-    { label: 'Key', field: 'key', type: 'number', filterOptions: { enabled: true }, width: '150px' },
-    { label: 'Header', field: 'header', filterOptions: { enabled: true } },
+    { label: 'Key', field: 'key', filterOptions: { enabled: true }, width: '150px' },
     { label: 'Payload', field: 'payload', filterOptions: { enabled: true } },
     { label: 'Timestamp', field: 'timestamp', type: 'number', filterOptions: { enabled: true } },
     { label: 'Actions', field: 'actions', tdClass: 'text-center', width: '50px' },
@@ -21,14 +21,22 @@ export default class KafkaDLQTable extends Vue {
 
   public async mounted() {
     const result = await this.kafkaMessageProvider.fetch();
+    const rows = [];
 
-    this.rows = result.data;
+    for (const id in result.data) {
+      rows.push({
+        ...result.data[id],
+        id
+      })
+    }
+
+    this.rows = rows;
   }
 
-  public async republishMessage(offset: number) {
+  public async republishMessage(id: number) {
     try {
-      await this.kafkaMessageProvider.republish(offset);
-      this.removeMessage(offset);
+      await this.kafkaMessageProvider.republish(id);
+      this.removeMessage(id);
       this.$notify({
         group: 'notifications',
         title: 'Success!',
@@ -46,8 +54,8 @@ export default class KafkaDLQTable extends Vue {
     }
   }
 
-  private removeMessage(offset: number): void {
-    const index = this.rows.findIndex(row => row.offset == offset);
+  private removeMessage(id: number): void {
+    const index = this.rows.findIndex(row => row.id == id);
 
     this.rows.splice(index, 1);
   }

@@ -10,7 +10,7 @@
 
         <template slot="table-row" slot-scope="props">
             <span v-if="props.column.field === 'actions'">
-                  <button type="button" @click="republishMessage(props.formattedRow.offset)" class="btn btn-info">
+                  <button type="button" @click="republishMessage(props.formattedRow.id)" class="btn btn-info">
                       <i class="fas fa-sync-alt"></i>
                   </button>
             </span>
