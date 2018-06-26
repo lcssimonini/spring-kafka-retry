@@ -21,16 +21,8 @@ export default class KafkaDLQTable extends Vue {
 
   public async mounted() {
     const result = await this.kafkaMessageProvider.fetch();
-    const rows = [];
 
-    for (const id in result.data) {
-      rows.push({
-        ...result.data[id],
-        id
-      })
-    }
-
-    this.rows = rows;
+    this.rows = result.data;
   }
 
   public async republishMessage(id: number) {
