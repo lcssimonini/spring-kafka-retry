@@ -30,16 +30,29 @@
 
     <distributionManagement>
         <repository>
-            <id>internal-zup</id>
-            <name>Internal Release Repository</name>
-            <url>http://archiva.aws.zup.com.br/repository/internal/</url>
+            <id>rw-nexus-release-admin</id>
+            <name>Realwave Nexus Release Repository Admin</name>
+            <url>https://repo.zup.com.br/repository/rw-jars-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots-zup</id>
-            <name>Internal Snapshot Repository</name>
-            <url>http://archiva.aws.zup.com.br/repository/snapshots/</url>
+            <id>rw-nexus-snapshots-admin</id>
+            <name>Realwave Nexus Snapshots Repository Admin</name>
+            <url>https://repo.zup.com.br/repository/rw-jars-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>rw-nexus-release</id>
+            <name>Realwave Nexus Release Repository</name>
+            <url>https://repo.zup.com.br/repository/rw-jars-all/</url>
+        </repository>
+        <repository>
+            <id>zup-nexus-release</id>
+            <name>Zup Nexus Release Repository</name>
+            <url>https://repo.zup.com.br/repository/zup-jars-all/</url>
+        </repository>
+    </repositories>
 
     <scm>
         <connection>scm:git:https://github.com/ZupIT/spring-kafka-retry.git</connection>
