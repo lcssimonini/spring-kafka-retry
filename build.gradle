@@ -1,0 +1,92 @@
+plugins {
+    id 'maven-publish'
+    id "org.jetbrains.kotlin.jvm" version "1.2.71"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = 'https://repo.spring.io/ext-release-local/'
+    }
+
+    maven {
+        url = 'https://repo.spring.io/milestone'
+    }
+
+    maven {
+        url = 'https://repo.spring.io/snapshot'
+    }
+
+    maven {
+        url = 'http://repo.maven.apache.org/maven2'
+    }
+}
+
+ext {
+    usernameNexus= "admin"
+    passwordNexus= "cee9dieChohn5"
+    urlNexus="https://nexus.cvortex.io/repository/maven-releases/"
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.2.41'
+    implementation 'org.springframework.boot:spring-boot:1.5.12.RELEASE'
+    implementation 'org.springframework.kafka:spring-kafka:1.3.5.RELEASE'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    testImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:1.5.12.RELEASE'
+    testImplementation 'org.springframework.kafka:spring-kafka-test:1.3.5.RELEASE'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:2.6.0'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'org.springframework:spring-test:4.3.16.RELEASE'
+    compileOnly 'com.fasterxml.jackson.core:jackson-core:2.9.5'
+    compileOnly 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+}
+
+group = 'io.cvortex'
+version = '1.0.0'
+description = 'spring-kafka-retry'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        pluginPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId "spring-kafka-retry"
+            version project.version
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username "${usernameNexus}"
+                password "${passwordNexus}"
+            }
+            url "${urlNexus}"
+        }
+    }
+}
+
+configurations.all {
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

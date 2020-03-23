@@ -32,8 +32,8 @@ public class SpringBootApp {
 Configuring a KafkaListener with retry policy:
 
 ```java
-import io.zup.springframework.kafka.annotation.RetryKafkaListener;
-import io.zup.springframework.kafka.annotation.RetryPolicy;
+import io.cvortex.spring.kafka.annotation.RetryKafkaListener;
+import io.cvortex.spring.kafka.annotation.RetryPolicy;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -69,54 +69,6 @@ The library doesn't handle topics creation.
 * kafka-clients 0.11.0.x, 1.0.x
 * spring-kafka version 1.3.x
 * jackson 2.x - required for serializing message headers used by this lib.
-
-
-### Installing
-
-* Using [Maven](https://maven.apache.org/) - Dependency Management - Include the following dependencies in pom.xml:
-
-```xml
-<properties>
-    <jackson.version>2.9.5</jackson.version>
-    <spring-boot.version>1.5.12.RELEASE</spring-boot.version>
-    <spring-kafka.version>1.3.5.RELEASE</spring-kafka.version>
-    <spring-kafka-retry.version>1.0.1</spring-kafka-retry.version>
-</properties>
-
-<dependencies>
-
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter</artifactId>
-        <version>${spring-boot.version}</version>
-    </dependency>
-
-    <dependency>
-        <groupId>org.springframework.kafka</groupId>
-        <artifactId>spring-kafka</artifactId>
-        <version>${spring-kafka.version}</version>
-    </dependency>
-    
-    <dependency>
-        <groupId>io.zup</groupId>
-        <artifactId>spring-kafka-retry</artifactId>
-        <version>${spring-kafka-retry.version}</version>
-    </dependency>
-
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-core</artifactId>
-        <version>${jackson.version}</version>
-    </dependency>
-
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-    </dependency>
-
-</dependencies>
-```
 
 ## Unit Testing
 
@@ -164,7 +116,7 @@ Unit tests using junit, mockito and KafkaEmbedded:
 
 TestApplicationConfig.java
 ```java
-import io.zup.springframework.kafka.config.KafkaRetryConfiguration;
+import io.cvortex.spring.kafka.config.KafkaRetryConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
@@ -185,8 +137,8 @@ public interface ConsumerHandler {
 
 Consumer.java
 ```java
-import io.zup.springframework.kafka.annotation.RetryKafkaListener;
-import io.zup.springframework.kafka.annotation.RetryPolicy;
+import io.cvortex.spring.kafka.annotation.RetryKafkaListener;
+import io.cvortex.spring.kafka.annotation.RetryPolicy;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
